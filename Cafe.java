@@ -521,7 +521,7 @@ try{
 		
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		boolean paid = false;
-		String stat = "Hasnt started";
+		String stat = "Hasn''t started";
       		query = "SELECT  price FROM MENU WHERE itemName = '" + input + "'";
 		List<List<String>> trys = esql.executeQueryAndReturnResult(query);
 		String total = (trys.get(0)).get(0);
@@ -554,6 +554,7 @@ try{
       // ...
 	//Finished tested can be extended
 	try{
+		String stat = "Hasn''t Started";
 		System.out.print("\tWhat Orderid do you want to update: ");
 		String input = in.readLine();
 		String query = "SELECT orderid FROM ORDERS WHERE orderid = '" + input + "' AND 			paid = false AND login = '" + authorisedUser + "'";
@@ -563,6 +564,8 @@ try{
 			return;}
 		System.out.print("Add item\nEnter item name: ");
 		String newitem = in.readLine();
+		System.out.print("\tComments(optional): ");
+     		String comment = in.readLine();
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		query = "SELECT  price FROM MENU WHERE itemName = '" + newitem + "'";
 		List<List<String>> trys = esql.executeQueryAndReturnResult(query);
@@ -573,6 +576,8 @@ try{
 		query = "UPDATE ORDERS SET total = " +totalnew + "WHERE orderid = '" + input + "'";
 		esql.executeUpdate(query);
 		query = "UPDATE ORDERS SET timeStampRecieved = '" + date + "' WHERE orderid = '" + 			input + "'";
+		esql.executeUpdate(query);
+		query = String.format("INSERT INTO ItemStatus ( orderid, itemName, lastUpdated, status, 		comments)VALUES ('%s','%s','%s','%s','%s')", input, newitem ,date,stat,comment);
 		esql.executeUpdate(query);
 		query = "SELECT * FROM ORDERS";
 		int rowCount = esql.executeQueryAndPrintResult(query);
