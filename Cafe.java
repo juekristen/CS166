@@ -28,6 +28,7 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.sql.Timestamp;
+import java.io.*;
 
 //private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
 
@@ -447,10 +448,19 @@ public class Cafe {
       // ...
       // ...
       //started not tested home
+	String types;
+try{
+	String query = "SELECT type FROM Users WHERE login = '" + authorisedUser + "'";
         List<List<String>> trys = esql.executeQueryAndReturnResult(query);
-        String types = (trys.get(0)).get(0);
+        types = (trys.get(0)).get(0);
         
       return types;
+}
+catch(Exception e){
+         System.err.println (e.getMessage());
+      return null;
+}
+
    }
 
    public static void BrowseMenuName(Cafe esql){
@@ -522,8 +532,8 @@ try{
 		int oid = Integer.parseInt((id.get(0)).get(0));
 		query = String.format("INSERT INTO ItemStatus ( orderid, itemName, lastUpdated, status, 		comments)VALUES ('%s','%s','%s','%s','%s')", oid, input ,date,stat,comment);
 		esql.executeUpdate(query);
-		query = "SELECT * FROM itemStatus";
-		esql.executeQueryAndPrintResult(query);
+		//query = "SELECT * FROM itemStatus";
+		//esql.executeQueryAndPrintResult(query);
 		Integer orderid=oid;
       		return orderid;
 		
@@ -604,51 +614,58 @@ try{
       // ...
       // done not tested done at home
       try{
+		String updateRes;
           do{
           System.out.print("What do you want to update (phone number,password,or favorite items)(type done when done):");
-          String updateRes = in.readLine();
-          if(updateRes.isLowercase() == "phone number")
+          updateRes = in.readLine();
+          if(updateRes.toLowerCase().equals("phone number"))
           {
               System.out.print("What is the updated phone number: ");
               String phoneno = in.readLine();
-              String query = "UPDATE Users SET phoneNum = '" + phoneno + "' WHERE user = '" + authorisedUser + "'";
+              String query = "UPDATE Users SET phoneNum = '" + phoneno + "' WHERE login = '" + authorisedUser + "'";
               esql.executeUpdate(query);
           }
-          else if(updateRes.isLowercase() == "password")
+          else if(updateRes.toLowerCase().equals("password"))
           {
-              int userNum = 1;
-              while(userNum != 0){
-                  System.out.print("Please reenter your password for security purposes: ")
+              int userNum = 0;
+              while(userNum == 0){
+                  System.out.print("Please reenter your password for security purposes: ");
                   String pass = in.readLine();
-                  String query = "SELECT * FROM USERS WHERE user = '" + authorisedUser + "' AND password = '" + pass + "'";
+                  String query = "SELECT * FROM USERS WHERE login = '" + authorisedUser + "' AND password = '" + pass + "'";
                   userNum = esql.executeQuery(query);
                   if(userNum == 0)
                   {
-                      System.out.print("Incorrect Password: Try again");
+                      System.out.print("Incorrect Password: Try again\n");
                   }
               }
               System.out.print("What is the updated password: ");
               String passnew = in.readLine();
-              String query = "UPDATE Users SET password = '" + passnew + "' WHERE user = '" + authorisedUser + "'";
+              String query = "UPDATE Users SET password = '" + passnew + "' WHERE login = '" + 			authorisedUser + "'";
               esql.executeUpdate(query);
+		query = "SELECT * FROM Users WHERE login = '" + authorisedUser +"'";
+              esql.executeQueryAndPrintResult(query);
           }
-          else if(updateRes.isLowercase() == "favorite items")
+          else if(updateRes.toLowerCase().equals( "favorite items"))
           {
               System.out.print("What are your favorite items: ");
               String favs = in.readLine();
-              String query = "SELECT favItems FROM USERS WHERE user = '" + authorisedUser + "'";
-              List<List<String>> trys = esql.executeQueryAndReturnResult(query);
-              String items = (trys.get(0)).get(0);
-              String query = "UPDATE Users SET favItems = '" + items + favs + "' WHERE user = '" + authorisedUser + "'";
+              //String query = "SELECT favItems FROM USERS WHERE login = '" + authorisedUser + "'";
+              //List<List<String>> trys = esql.executeQueryAndReturnResult(query);
+             //String items = (trys.get(0)).get(0);
+              String query = "UPDATE Users SET favItems = '" + favs + "' WHERE login = '" + authorisedUser + "'";
               esql.executeUpdate(query);
           }
-          else if(updateRes.isLowercase() != done)
+          else if(!updateRes.toLowerCase().equals("done"))
           {
-              System.out.print("Unrecongized input");
+              System.out.print("Unrecongized input\n");
           }
           }
-          while(updateRes.isLowercase() != "done")
+          while(!updateRes.toLowerCase().equals("done"));
       }
+catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
    }//end
 
    public static void ManagerUpdateUserInfo(Cafe esql){
@@ -661,11 +678,12 @@ try{
       // Your code goes here.
       // ...
       // ...
+try{
       System.out.print("Update, add, or delete: ");
       String options = in.readLine();
-      if(options.isLowercase() == "update")
+      if(options.toLowerCase().equals("update"))
       {
-          System.out.print("What item would you like to update");
+          System.out.print("What item would you like to update: ");
           String itUp = in.readLine();
           String query = "SELECT * FROM Menu WHERE itemName = '" + itUp + "'";
           int count = esql.executeQuery(query);
@@ -675,7 +693,7 @@ try{
               return;
           }
       }
-      else if(options.isLowercase() == "add")
+      else if(options.toLowerCase().equals("add"))
       {
           System.out.print("Item name: ");
           String iName = in.readLine();
@@ -687,9 +705,14 @@ try{
           String desc = in.readLine();
           System.out.print("URL: ");
           String url = in.readLine();
-          String query = String.format("INSERT INTO Menu ( itemName, type, price, description, url)VALUES ('%s','%s','%s','%s','%s')", iname, typename,pricenew,desc, url);
+          String query = String.format("INSERT INTO Menu ( itemName, type, price, description, url)VALUES ('%s','%s','%s','%s','%s')", iName, typename,pricenew,desc, url);
           esql.executeQuery(query);
       }
+}
+catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
    }//end
 
    public static void ViewOrderStatus(Cafe esql){
