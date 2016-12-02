@@ -724,7 +724,17 @@ catch(Exception e){
       // Your code goes here.
       // ...
       // ...
-        
+        System.out.print("What is the order id: ");
+        String oid = in.readLine();
+        String query = "SELECT * FROM Order WHERE orderid = '" + oid + "'";
+        int count = esql.executeQuery(query);
+          if(count == 0)
+          {
+              System.out.print("No such order id");
+              return;
+          }
+        query = "SELECT itemName, status FROM ItemStatus WHERE orderid = '" + oid +"'";
+        esql.executeQueryAndPrintResult(query);
    }//end
 
    public static void ViewCurrentOrder(Cafe esql){
