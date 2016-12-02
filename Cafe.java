@@ -475,7 +475,10 @@ try{
       query += input;
       query +="'";
  	int rowCount = esql.executeQueryAndPrintResult(query);
-         System.out.println ("total row(s): " + rowCount);
+         if(rowCount == 0)
+	{
+		System.out.print("\tItem Name does not exist\n");
+	}
 }
 	catch(Exception e){
          System.err.println (e.getMessage());
@@ -495,7 +498,11 @@ try{
 	      query += input;
 	      query +="'";
 	 	int rowCount = esql.executeQueryAndPrintResult(query);
-		 System.out.println ("total row(s): " + rowCount);
+		if(rowCount == 0)
+		{
+		System.out.print("\tItem Type does not exist\n");
+		}
+		 //System.out.println ("total row(s): " + rowCount);
 	}
 		catch(Exception e){
 		 System.err.println (e.getMessage());
@@ -579,8 +586,8 @@ try{
 		esql.executeUpdate(query);
 		query = String.format("INSERT INTO ItemStatus ( orderid, itemName, lastUpdated, status, 		comments)VALUES ('%s','%s','%s','%s','%s')", input, newitem ,date,stat,comment);
 		esql.executeUpdate(query);
-		query = "SELECT * FROM ORDERS";
-		int rowCount = esql.executeQueryAndPrintResult(query);
+		//query = "SELECT * FROM ORDERS";
+		//int rowCount = esql.executeQueryAndPrintResult(query);
 	
 	}
 	catch(Exception e){
@@ -710,8 +717,8 @@ try{
           String desc = in.readLine();
           System.out.print("URL: ");
           String url = in.readLine();
-          String query = String.format("INSERT INTO Menu ( itemName, type, price, description, url)VALUES ('%s','%s','%s','%s','%s')", iName, typename,pricenew,desc, url);
-          esql.executeQuery(query);
+          String query = String.format("INSERT INTO Menu ( itemName, type, price, description, imageURL)VALUES ('%s','%s','%s','%s','%s')", iName, typename,pricenew,desc, url);
+          esql.executeUpdate(query);
       }
 }
 catch(Exception e){
@@ -724,9 +731,10 @@ catch(Exception e){
       // Your code goes here.
       // ...
       // ...
+try{
         System.out.print("What is the order id: ");
         String oid = in.readLine();
-        String query = "SELECT * FROM Order WHERE orderid = '" + oid + "'";
+        String query = "SELECT * FROM Orders WHERE orderid = '" + oid + "'";
         int count = esql.executeQuery(query);
           if(count == 0)
           {
@@ -735,6 +743,12 @@ catch(Exception e){
           }
         query = "SELECT itemName, status FROM ItemStatus WHERE orderid = '" + oid +"'";
         esql.executeQueryAndPrintResult(query);
+}
+
+catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
    }//end
 
    public static void ViewCurrentOrder(Cafe esql){
