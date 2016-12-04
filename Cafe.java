@@ -742,6 +742,86 @@ catch(Exception e){
       // Your code goes here.
       // ...
       // ...
+	try{
+	
+		String updateRes;
+          do{
+          System.out.print("What do you want to update (phone number,password,favorite items, or user type)(type done when done):");
+          updateRes = in.readLine();
+          if(updateRes.toLowerCase().equals("phone number"))
+          {
+              System.out.print("What is the updated phone number: ");
+              String phoneno = in.readLine();
+              String query = "UPDATE Users SET phoneNum = '" + phoneno + "' WHERE login = '" + authorisedUser + "'";
+              esql.executeUpdate(query);
+          }
+          else if(updateRes.toLowerCase().equals("password"))
+          {
+              int userNum = 0;
+              while(userNum == 0){
+                  System.out.print("Please reenter your password for security purposes: ");
+                  String pass = in.readLine();
+                  String query = "SELECT * FROM USERS WHERE login = '" + authorisedUser + "' AND password = '" + pass + "'";
+                  userNum = esql.executeQuery(query);
+                  if(userNum == 0)
+                  {
+                      System.out.print("Incorrect Password: Try again\n");
+                  }
+              }
+              System.out.print("What is the updated password: ");
+              String passnew = in.readLine();
+              String query = "UPDATE Users SET password = '" + passnew + "' WHERE login = '" + 			authorisedUser + "'";
+              esql.executeUpdate(query);
+		query = "SELECT * FROM Users WHERE login = '" + authorisedUser +"'";
+              esql.executeQueryAndPrintResult(query);
+          }
+          else if(updateRes.toLowerCase().equals( "favorite items"))
+          {
+              System.out.print("What are your favorite items: ");
+              String favs = in.readLine();
+              //String query = "SELECT favItems FROM USERS WHERE login = '" + authorisedUser + "'";
+              //List<List<String>> trys = esql.executeQueryAndReturnResult(query);
+             //String items = (trys.get(0)).get(0);
+              String query = "UPDATE Users SET favItems = '" + favs + "' WHERE login = '" + authorisedUser + "'";
+              esql.executeUpdate(query);
+          }
+	  else if(updateRes.toLowerCase().equals("user type")
+	{
+		System.out.print("What user would you like to change: ");
+		String userna = in.readLine();
+		String query = "SELECT * FROM Users WHERE login = '" + userna + "'";
+		int numba = esql.executeQuery(query);
+		while(numba == 0)
+		{
+			System.out.print("User does not exist");
+			System.out.print("What user would you like to change: ");
+			String userna = in.readLine();
+			String query = "SELECT * FROM Users WHERE login = '" + userna + "'";
+			numba = esql.executeQuery(query);
+		}
+		System.out.print("What is " + usernam + " new status:(Customer, Manager, or Employee)");
+		String stat = in.readLine();
+		while(!stat.equals("Customer") || !stat.equals("Manager") || !stat.equals("Employee"))
+		{
+			System.out.print("Unreconized input");
+			System.out.print("What is " + usernam + " new status:(Customer, Manager, or 				Employee)");
+			String stat = in.readLine();
+		}
+		query = "UPDATE Users SET type = '" + stat + "' WHERE login = '" + userna + "'";
+		esql.executeUpdate(query);
+	}
+          else if(!updateRes.toLowerCase().equals("done"))
+          {
+              System.out.print("Unrecongized input\n");
+          }
+          }
+          while(!updateRes.toLowerCase().equals("done"));
+	}
+	catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
+   }
    }//end
 
    public static void UpdateMenu(Cafe esql){
@@ -813,6 +893,17 @@ catch(Exception e){
       // Your code goes here.
       // ...
       // ...
+	//timestamp
+	try{
+		Timestamp date = new Timestamp(System.currentTimeMillis());
+		String query = "SELECT * FROM Orders WHERE (SELECT TIMEDIFF(timeStampRecieved,'" + date 		+ "')) < 24 //index this
+		esql.executeQueryAndPrintResult(query);
+	}
+   }
+catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
    }//end
 
    public static void Query6(Cafe esql){
