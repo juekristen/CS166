@@ -601,6 +601,64 @@ try{
       // Your code goes here.
       // ...
       // ...
+      try{
+        System.out.print("\tWhat Orderid do you want to update: ");
+		String input = in.readLine();
+		String query = "SELECT orderid FROM ORDERS WHERE orderid = '" + input + "'";
+	 	int userNum = esql.executeQuery(query);
+		 if (userNum == 0){
+			System.out.print("Unreconized Orderid or Unauthorized Orderid\n");
+			return;}
+        System.out.print("Do you want to change status to paid?: (y or n) ");
+        String yesno = in.readLine();
+        while(!yesno.equals("y") || !yesno.equals("n"))
+        {
+            System.out("Unrecognized input\n");
+             System.out.print("Do you want to change status to paid?: (y or n) ");
+            yesno = in.readLine();
+        }
+        if(yesno.equals("y"))
+        {
+            query = "UPDATE Orders SET paid = true WHERE orderid = '"+input + "'";
+            esql.executeUpdate(query);
+        }
+        System.out.print("Do you want to update an item status? (y or n) ");
+        yesno = in.readLine();
+        while(!yesno.equals("y") || !yesno.equals("n"))
+        {
+            System.out("Unrecognized input\n");
+             System.out.print("Do you want to update an item status? (y or n) ");
+            yesno = in.readLine();
+        }
+        if(yesno.equals("y"))
+        {
+            System.out.print("What item do you want to update: ");
+            String itemNames = in.readLine();
+            query = "SELECT * FROM itemStatus WHERE orderid = '"+ input +"' AND itemName = '" + itemNames + "'";
+            int huh = esql.executeQuery(query);
+            while(huh == 0 && !itemNames.equals("q"))
+            {
+                System.out.print("No such item in this order\n");
+                System.out.print("What item do you want to update: (q to quit)");
+                String itemNames = in.readLine();
+                query = "SELECT * FROM itemStatus WHERE orderid = '"+ input +"' AND itemName = '" + itemNames + "'";
+                int huh = esql.executeQuery(query);
+            }
+            if(itemNames.equals('q'))
+                return;
+            Timestamp date = new Timestamp(System.currentTimeMillis());
+            System.out.print("What do you want to set the status to? ");
+            String stat = in.readLine();
+            query = "UPDATE itemStatus SET status = '" + stat + "'timeStampRecieved = '" + date +"' WHERE orderid = '" + input + "' AND itemName = '" + itemNames + "'";
+            esql.executeUpdate(query);
+         }
+      }
+      catch(Exception e){
+		System.err.println (e.getMessage());
+	      
+	}
+          
+        
    }//end
 
    public static void ViewOrderHistory(Cafe esql){
