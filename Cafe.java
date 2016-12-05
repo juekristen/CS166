@@ -562,6 +562,9 @@ try{
 	//Finished tested can be extended
 	try{
 		String stat = "Hasn''t Started";
+		System.out.print("Do you want to add an item to your order or update existing order (type \"add\" or \"existing\"): ");
+		String response = in.readLine();
+		if(response.equals("add")){
 		System.out.print("\tWhat Orderid do you want to update: ");
 		String input = in.readLine();
 		String query = "SELECT orderid FROM ORDERS WHERE orderid = '" + input + "' AND 			paid = false AND login = '" + authorisedUser + "'";
@@ -586,6 +589,30 @@ try{
 		esql.executeUpdate(query);
 		query = String.format("INSERT INTO ItemStatus ( orderid, itemName, lastUpdated, status, 		comments)VALUES ('%s','%s','%s','%s','%s')", input, newitem ,date,stat,comment);
 		esql.executeUpdate(query);
+		}
+		else if(response.equals("existing"))
+		{
+			System.out.print("\tWhat Orderid do you want to update: ");
+			String input = in.readLine();
+			String query = "SELECT orderid FROM ORDERS WHERE orderid = '" + input + "' AND 				paid = false AND login = '" + authorisedUser + "'";
+	 		int userNum = esql.executeQuery(query);
+		 if (userNum == 0){
+			System.out.print("Unreconized Orderid or Unauthorized Orderid\n");
+			return;}
+			System.out.print("\tWhat item name do you want to update: ");
+			String inputname = in.readLine();
+			query = "SELECT itemName FROM ItemStatus WHERE itemName = '" + inputname 				+"' AND orderid = '"+ input + "'";
+	 		userNum = esql.executeQuery(query);
+		 if (userNum == 0){
+			System.out.print("Unreconized item name\n");
+			return;}
+			System.out.print("Comments: ");
+			String comments = in.readLine();
+			query = "UPDATE ItemStatus SET comments = '" + comments + "' WHERE orderid = '" 			+ input +"' AND itemName = '" + inputname + "'";
+			esql.executeUpdate(query);		
+			
+			
+		}
 		//query = "SELECT * FROM ORDERS";
 		//int rowCount = esql.executeQueryAndPrintResult(query);
 	
@@ -858,6 +885,29 @@ try{
           String query = String.format("INSERT INTO Menu ( itemName, type, price, description, imageURL)VALUES ('%s','%s','%s','%s','%s')", iName, typename,pricenew,desc, url);
           esql.executeUpdate(query);
       }
+	else if(options.toLowerCase().equals("delete"))
+	{
+		System.out.print("What item name do you want to delete? ");
+		String iname = in.readLine();
+		String query = "SELECT * FROM Menu WHERE itemName = '" + iname + "'";
+		int count = esql.executeQuery(query);
+		if(count == 0)
+		{
+			System.out.print("No such item name\n ");
+			return;
+		}
+		query = "SELECT * FROM ItemStatus WHERE itemName = '" + iname + "'";
+		count = esql.executeQuery(query);
+		if(count!=0)
+		{
+			System.out.print("Cannot delete because still in order\n");
+			return;
+		}
+		query = "DELETE FROM Menu WHERE itemName = '" + iname + "'";
+		esql.executeQuery(query);
+	}
+	else
+	return;
 }
 catch(Exception e){
 		System.err.println (e.getMessage());
