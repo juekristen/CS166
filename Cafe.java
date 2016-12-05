@@ -770,8 +770,7 @@ catch(Exception e){
       // ...
       // ...
 	try{
-	
-		String updateRes;
+	  String updateRes;
           do{
           System.out.print("What do you want to update (phone number,password,favorite items, or user type)(type done when done):");
           updateRes = in.readLine();
@@ -860,15 +859,67 @@ try{
       String options = in.readLine();
       if(options.toLowerCase().equals("update"))
       {
-          System.out.print("What item would you like to update: ");
-          String itUp = in.readLine();
-          String query = "SELECT * FROM Menu WHERE itemName = '" + itUp + "'";
-          int count = esql.executeQuery(query);
-          if(count == 0)
-          {
-              System.out.print("No such item name");
-              return;
-          }
+	  // Where Gerardo started.
+	  String itUp = "";
+	  do{
+          	System.out.print("What item would you like to update (Type 'q' to exit.): ");
+          	itUp = in.readLine();
+          	String query = "SELECT * FROM Menu WHERE itemName = '" + itUp + "'";
+          	int count = esql.executeQuery(query);
+          	if(count == 0)
+          	{
+              		System.out.print("No such item name");
+              		return;
+          	}
+		if (itUp.toLowerCase.equals("q"))
+		{
+			break;	
+		}
+		else
+		{
+	        	String fieldToUpdate = "";
+			do
+			{
+				System.out.println("What would you like to update(Name, Type, Price, Description, URL, Type 'q' to exit)?: ");
+				String q = "";
+				fieldToUpdate = in.Readline();
+				if (fieldToUpdate.toLowerCase().equals("q"))
+				{
+					break;	
+				}
+				else if (fieldToUpdate.toLowerCase().equals("name"))
+				{
+					q = "UPDATE MENU SET ITEMNAME = '" + fieldToUpdate + "' WHERE ITEMNAME = '" + itUp +"'";
+					esql.executeQuery(q);
+				}
+				else if (fieldToUpdate.toLowerCase().equals("type"))
+				{
+					q = "UPDATE MENU SET TYPE = '" + fieldToUpdate + "' WHERE ITEMNAME = '" + itUp +"'";
+					esql.executeQuery(q);	
+				}
+				else if (fieldToUpdate.toLowerCase().equals("price"))
+				{
+					q = "UPDATE MENU SET PRICE = '" + fieldToUpdate + "' WHERE ITEMNAME = '" + itUp +"'";
+					esql.executeQuery(q);					
+				}
+				else if (fieldToUpdate.toLowerCase().equals("description"))
+				{
+					q = "UPDATE MENU SET DESCRIPTION = '" + fieldToUpdate + "' WHERE ITEMNAME = '" + itUp +"'";
+					esql.executeQuery(q);					
+				}
+				else if (fieldToUpdate.toLowerCase().equals("url"))
+				{
+					q = "UPDATE MENU SET IMAGEURL = '" + fieldToUpdate + "' WHERE ITEMNAME = '" + itUp +"'";
+					esql.executeQuery(q);					
+				}
+				else
+				{
+					System.out.println("Unrecognized input. Please try again.");
+				}
+			} while (1);
+		}
+	    } while(1);
+	    //End here
       }
       else if(options.toLowerCase().equals("add"))
       {
