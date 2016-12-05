@@ -611,9 +611,9 @@ try{
 			return;}
         System.out.print("Do you want to change status to paid?: (y or n) ");
         String yesno = in.readLine();
-        while(!yesno.equals("y") || !yesno.equals("n"))
+        while(!yesno.equals("y") && !yesno.equals("n"))
         {
-            System.out("Unrecognized input\n");
+            System.out.print("Unrecognized input\n");
              System.out.print("Do you want to change status to paid?: (y or n) ");
             yesno = in.readLine();
         }
@@ -624,9 +624,9 @@ try{
         }
         System.out.print("Do you want to update an item status? (y or n) ");
         yesno = in.readLine();
-        while(!yesno.equals("y") || !yesno.equals("n"))
+        while(!yesno.equals("y") && !yesno.equals("n"))
         {
-            System.out("Unrecognized input\n");
+            System.out.print("Unrecognized input\n");
              System.out.print("Do you want to update an item status? (y or n) ");
             yesno = in.readLine();
         }
@@ -640,16 +640,16 @@ try{
             {
                 System.out.print("No such item in this order\n");
                 System.out.print("What item do you want to update: (q to quit)");
-                String itemNames = in.readLine();
+                itemNames = in.readLine();
                 query = "SELECT * FROM itemStatus WHERE orderid = '"+ input +"' AND itemName = '" + itemNames + "'";
-                int huh = esql.executeQuery(query);
+                 huh = esql.executeQuery(query);
             }
             if(itemNames.equals('q'))
                 return;
             Timestamp date = new Timestamp(System.currentTimeMillis());
             System.out.print("What do you want to set the status to? ");
             String stat = in.readLine();
-            query = "UPDATE itemStatus SET status = '" + stat + "'timeStampRecieved = '" + date +"' WHERE orderid = '" + input + "' AND itemName = '" + itemNames + "'";
+            query = "UPDATE itemStatus SET status = '" + stat + " WHERE orderid = '" + input + "' AND itemName = '" + itemNames + "'";
             esql.executeUpdate(query);
          }
       }
@@ -785,7 +785,7 @@ catch(Exception e){
               String query = "UPDATE Users SET favItems = '" + favs + "' WHERE login = '" + authorisedUser + "'";
               esql.executeUpdate(query);
           }
-	  else if(updateRes.toLowerCase().equals("user type")
+	  else if(updateRes.toLowerCase().equals("user type"))
 	{
 		System.out.print("What user would you like to change: ");
 		String userna = in.readLine();
@@ -793,19 +793,19 @@ catch(Exception e){
 		int numba = esql.executeQuery(query);
 		while(numba == 0)
 		{
-			System.out.print("User does not exist");
+			System.out.print("User does not exist\n");
 			System.out.print("What user would you like to change: ");
-			String userna = in.readLine();
-			String query = "SELECT * FROM Users WHERE login = '" + userna + "'";
+			userna = in.readLine();
+			query = "SELECT * FROM Users WHERE login = '" + userna + "'";
 			numba = esql.executeQuery(query);
 		}
-		System.out.print("What is " + usernam + " new status:(Customer, Manager, or Employee)");
+		System.out.print("What is the new status:(Customer, Manager, or Employee)");
 		String stat = in.readLine();
-		while(!stat.equals("Customer") || !stat.equals("Manager") || !stat.equals("Employee"))
+		while(!stat.equals("Customer") && !stat.equals("Manager") && !stat.equals("Employee"))
 		{
-			System.out.print("Unreconized input");
-			System.out.print("What is " + usernam + " new status:(Customer, Manager, or 				Employee)");
-			String stat = in.readLine();
+			System.out.print("Unreconized input\n");
+			System.out.print("What is the new status:(Customer, Manager, or Employee)");
+			stat = in.readLine();
 		}
 		query = "UPDATE Users SET type = '" + stat + "' WHERE login = '" + userna + "'";
 		esql.executeUpdate(query);
@@ -821,7 +821,7 @@ catch(Exception e){
 		System.err.println (e.getMessage());
 	      
 	}
-   }
+   
    }//end
 
    public static void UpdateMenu(Cafe esql){
@@ -896,10 +896,10 @@ catch(Exception e){
 	//timestamp
 	try{
 		Timestamp date = new Timestamp(System.currentTimeMillis());
-		String query = "SELECT * FROM Orders WHERE (SELECT TIMEDIFF(timeStampRecieved,'" + date 		+ "')) < 24 //index this
+		String query = "SELECT * FROM Orders WHERE timeStampRecieved >= NOW() - INTERVAL '1' DAY AND paid = false"; //index this
 		esql.executeQueryAndPrintResult(query);
 	}
-   }
+   
 catch(Exception e){
 		System.err.println (e.getMessage());
 	      
